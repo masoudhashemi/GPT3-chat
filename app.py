@@ -62,7 +62,7 @@ def chatgpt3(
     return history, history
 
 
-with gr.Blocks("Chat with GPT-3") as block:
+with gr.Blocks(title="Chat with GPT-3") as block:
     gr.Markdown("## Chat with GPT-3")
     with gr.Row():
 
