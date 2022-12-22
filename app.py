@@ -49,7 +49,10 @@ def chatgpt3(
     history_prompt.append(f"\nHuman: {prompt}")
     inp = " ".join(history_prompt)
 
+    # keep the prompt length limited to ~2000 tokens
     inp = " ".join(inp.split()[-2000:])
+
+    # remove duplicate sentences
     sentences = nltk.sent_tokenize(inp)
     sentence_dict = {}
     for i, s in enumerate(sentences):
@@ -59,6 +62,7 @@ def chatgpt3(
     unique_sentences = [sentences[i] for i in sorted(sentence_dict.values())]
     inp = " ".join(unique_sentences)
 
+    # create the output with openai
     out = openai_completion(
         inp,
         openai_token,
