@@ -81,23 +81,15 @@ with gr.Blocks(title="Chat with GPT-3") as block:
     gr.Markdown("## Chat with GPT-3")
     with gr.Row():
         with gr.Column():
-            openai_token = gr.Textbox(
-                label="OpenAI API Key", value=os.getenv("OPENAI_API_KEY")
-            )
+            openai_token = gr.Textbox(label="OpenAI API Key", value=os.getenv("OPENAI_API_KEY"))
             engine = gr.Dropdown(
                 label="GPT3 Engine",
                 choices=openai_engines,
                 value="text-davinci-003",
             )
-            temperature = gr.Slider(
-                label="Temperature", minimum=0, maximum=1, step=0.1, value=0.9
-            )
-            max_tokens = gr.Slider(
-                label="Max Tokens", minimum=10, maximum=400, step=10, value=150
-            )
-            top_p = gr.Slider(
-                label="Top P", minimum=0, maximum=1, step=0.1, value=1
-            )
+            temperature = gr.Slider(label="Temperature", minimum=0, maximum=1, step=0.1, value=0.9)
+            max_tokens = gr.Slider(label="Max Tokens", minimum=10, maximum=400, step=10, value=150)
+            top_p = gr.Slider(label="Top P", minimum=0, maximum=1, step=0.1, value=1)
             frequency_penalty = gr.Slider(
                 label="Frequency Penalty",
                 minimum=0,
@@ -115,9 +107,7 @@ with gr.Blocks(title="Chat with GPT-3") as block:
 
         with gr.Column():
             chatbot = gr.Chatbot()
-            message = gr.Textbox(
-                value=prompt, label="Type your question here:"
-            )
+            message = gr.Textbox(value=prompt, label="Type your question here:")
             state = gr.State()
             message.submit(
                 fn=chatgpt3,
