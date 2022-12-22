@@ -1,6 +1,7 @@
 import os
 
 import gradio as gr
+import nltk
 import openai
 
 openai_engines = ["text-davinci-003", "code-davinci-002", "text-curie-001"]
@@ -45,10 +46,18 @@ def chatgpt3(
 ):
     history = history or []
     history_prompt = list(sum(history, ()))
-    history_prompt.append(prompt)
+    history_prompt.append(f"\nHuman: {prompt}")
     inp = " ".join(history_prompt)
-    
+
     inp = " ".join(inp.split()[-2000:])
+    sentences = nltk.sent_tokenize(inp)
+    sentence_dict = {}
+    for i, s in enumerate(sentences):
+        if s not in sentence_dict:
+            sentence_dict[s] = i
+
+    unique_sentences = [sentences[i] for i in sorted(sentence_dict.values())]
+    inp = " ".join(unique_sentences)
 
     out = openai_completion(
         inp,
@@ -82,17 +91,29 @@ with gr.Blocks(title="Chat with GPT-3") as block:
             max_tokens = gr.Slider(
                 label="Max Tokens", minimum=10, maximum=400, step=10, value=150
             )
-            top_p = gr.Slider(label="Top P", minimum=0, maximum=1, step=0.1, value=1)
+            top_p = gr.Slider(
+                label="Top P", minimum=0, maximum=1, step=0.1, value=1
+            )
             frequency_penalty = gr.Slider(
-                label="Frequency Penalty", minimum=0, maximum=1, step=0.1, value=0
+                label="Frequency Penalty",
+                minimum=0,
+                maximum=1,
+                step=0.1,
+                value=0,
             )
             presence_penalty = gr.Slider(
-                label="Presence Penalty", minimum=0, maximum=1, step=0.1, value=0.6
+                label="Presence Penalty",
+                minimum=0,
+                maximum=1,
+                step=0.1,
+                value=0.6,
             )
 
         with gr.Column():
             chatbot = gr.Chatbot()
-            message = gr.Textbox(value=prompt, label="Type your question here:")
+            message = gr.Textbox(
+                value=prompt, label="Type your question here:"
+            )
             state = gr.State()
             message.submit(
                 fn=chatgpt3,
