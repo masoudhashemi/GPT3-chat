@@ -61,7 +61,7 @@ def chatgpt3(
         presence_penalty,
     )
     history.append((inp, out))
-    return history, history
+    return history, history, ""
 
 
 with gr.Blocks(title="Chat with GPT-3") as block:
@@ -107,7 +107,7 @@ with gr.Blocks(title="Chat with GPT-3") as block:
                     frequency_penalty,
                     presence_penalty,
                 ],
-                outputs=[chatbot, state],
+                outputs=[chatbot, state, message],
             )
             submit = gr.Button("Send")
             submit.click(
@@ -123,7 +123,7 @@ with gr.Blocks(title="Chat with GPT-3") as block:
                     frequency_penalty,
                     presence_penalty,
                 ],
-                outputs=[chatbot, state],
+                outputs=[chatbot, state, message],
             )
 
 if __name__ == "__main__":
