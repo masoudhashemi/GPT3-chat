@@ -1,2 +1,3 @@
 dradio
 openai
+nltk
