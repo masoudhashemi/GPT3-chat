@@ -43,11 +43,13 @@ def chatgpt3(
     frequency_penalty,
     presence_penalty,
 ):
-    # TODO: remove old history if it gets too long
     history = history or []
     history_prompt = list(sum(history, ()))
     history_prompt.append(prompt)
     inp = " ".join(history_prompt)
+    
+    inp = " ".join(inp.split()[-2000:])
+
     out = openai_completion(
         inp,
         openai_token,
@@ -65,7 +67,6 @@ def chatgpt3(
 with gr.Blocks(title="Chat with GPT-3") as block:
     gr.Markdown("## Chat with GPT-3")
     with gr.Row():
-
         with gr.Column():
             openai_token = gr.Textbox(
                 label="OpenAI API Key", value=os.getenv("OPENAI_API_KEY")
@@ -91,8 +92,23 @@ with gr.Blocks(title="Chat with GPT-3") as block:
 
         with gr.Column():
             chatbot = gr.Chatbot()
-            message = gr.Textbox(value=prompt)
+            message = gr.Textbox(value=prompt, label="Type your question here:")
             state = gr.State()
+            message.submit(
+                fn=chatgpt3,
+                inputs=[
+                    message,
+                    state,
+                    openai_token,
+                    engine,
+                    temperature,
+                    max_tokens,
+                    top_p,
+                    frequency_penalty,
+                    presence_penalty,
+                ],
+                outputs=[chatbot, state],
+            )
             submit = gr.Button("Send")
             submit.click(
                 chatgpt3,
